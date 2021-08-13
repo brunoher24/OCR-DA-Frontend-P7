@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recettes</title>
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@500&family=Lato&display=swap" rel="stylesheet">
+    <!-- BOOTSTRAP -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous"> -->
+    <!-- FONTAWESOME -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+    <!-- MY CSS -->
+    <link rel="stylesheet" href="css/_.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+    <div id="main-container">
+        <header>
+            <img src="img/toque-chef.png" alt="Toque de cuisine">
+            <h1>Les petits plats</h1>
+        </header>
+        <main>
+            <article id="search-area">
+                <input type="text" placeholder="Rechercher un ingrédient, ustensile, appareil ou une recette" aria-label="Champs de recherche de recette par correspondance de texte">
+                <i class="fas fa-search search-icon"></i>
+            </article>
+            <article id="filters">
+                <ul id="tag-words-selected"></ul>
+                <ul id="filters-item">
+                    <li id="ingredients-filter">
+                        <div class="filter-tags-header">
+                            <span>Ingrédients</span>
+                            <input style="display: none;" type="text" class="search-tag-item" placeholder="Rechercher un ingrédient">
+                            <button><i class="fas fa-chevron-down"></i></button>
+                        </div>
+
+                        <div class="filter-tags-body ingredients-tag-uls"></div>
+                    </li>
+
+                    <li id="appliance-filter">
+                        <div class="filter-tags-header">
+                            <span>Appareils</span>
+                            <input style="display: none;" type="text" class="search-tag-item" placeholder="Rechercher un appareil">
+                            <button><i class="fas fa-chevron-down"></i></button>
+                        </div>
+
+                        <div class="filter-tags-body appliance-tag-uls"></div>
+                    </li>
+
+                    <li id="ustensils-filter">
+                        <div class="filter-tags-header">
+                            <span>Ustensiles</span>
+                            <input style="display: none;" type="text" class="search-tag-item" placeholder="Rechercher un ustensile">
+                            <button><i class="fas fa-chevron-down"></i></button>
+                        </div>
+
+                        <div class="filter-tags-body ustensils-tag-uls"></div>
+                    </li>
+                </ul>
+            </article>
+
+            <article id="recipes">
+                <ul class="recipe-cards-list">
+                    <li>
+                        <img src="img/cuisine.jpeg" alt="cuisine">
+                        <div class="recipe-card-bottom">
+                            <div class="recipe-card-bottom-first-line">
+                                <h3>Super titre de plat</h3>
+                                <div class="recipe-card-time-ctnr">
+                                    <i class="far fa-clock"></i>
+                                    <span>10 min</span>
+                                </div>
+                            </div>
+                            <div class="recipe-card-bottom-second-line">
+                                <ul class="recipe-ingredients-list">
+                                    <li>Lait de coco: 400ml</li>
+                                    <li>Jus de citron: 2</li>
+                                    <li>Créme de coco: 4</li>
+                                    <li>cuillères Sucre: 20g</li>
+                                    <li>Glaçons: 2</li>
+                                </ul>
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt non eos ex asperiores aperiam reiciendis unde rem corporis ratione quos. Id beatae consequatur soluta debitis neque aspernatur error aliquid nam?</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+        </main>
+
+
+    </div>
+
+
+
+    <!-- JQUERY + BOOTSTRAP -->
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script> -->
+
+    <!-- My JS -->
+    <script src="js/util.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/index.js"></script>
+</body>
+
+</html>
