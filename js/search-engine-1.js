@@ -16,9 +16,9 @@ function getMatchesWithRecipes(searchTxt) {
     const formated = searchTxt.toLowerCase();
     return recipes.filter(recipe => {
         if (recipe.name.match(formated) ||
-            recipe.appliance.match(formated) ||
+            // recipe.appliance.match(formated) ||
             recipe.description.match(formated) ||
-            recipe.ustensils.join("").match(formated) ||
+            // recipe.ustensils.join("").match(formated) ||
             recipe.ingredients.map(item => item.ingredient).join("").match(formated)
         ) {
             return true;
