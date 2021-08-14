@@ -36,19 +36,19 @@ function expandFiltertags(selector, tags) {
 
     let $ingredientsUl = document.createElement("ul");
     $tagsUls.appendChild($ingredientsUl);
-    let separator = 11;
+    let separator = 12;
     let width = 180;
-    if (tags.length > 20) {
-        separator = Math.floor(tags.length / 2) + 1;
+    if (tags.length > 24) {
+        console.log(tags.length, tags);
+        separator = Math.ceil(tags.length / 2);
     }
     tags.forEach((ingredient, i) => {
-        if ((i + 1) % separator == 0) {
+        if (i > 0 && i % separator == 0) {
             $ingredientsUl = document.createElement("ul");
             $tagsUls.appendChild($ingredientsUl);
             width += 180;
-        } else {
-            $ingredientsUl.innerHTML += `<li><button>${ingredient}</button></li>`;
         }
+        $ingredientsUl.innerHTML += `<li><button>${ingredient}</button></li>`;
     });
 
     tagItems[selector].width = width + "px"
@@ -68,8 +68,6 @@ function reduceFiltertags(selector) {
 
     tagItems[selector].expanded = false;
 }
-
-
 
 _QS("#ingredients-filter > .filter-tags-header > button").addEventListener("click", () => {
     expandFiltertags("ingredients", ingredients);
