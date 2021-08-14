@@ -1,11 +1,13 @@
-tagItems = {
-    ingredients: { loaded: false, expanded: false, width: "180px" },
-    appliance: { loaded: false, expanded: false, width: "180px" },
-    ustensils: { loaded: false, expanded: false, width: "180px" },
-};
+const tagItems = {
+        ingredients: { loaded: false, expanded: false, width: "180px" },
+        appliance: { loaded: false, expanded: false, width: "180px" },
+        ustensils: { loaded: false, expanded: false, width: "180px" },
+    },
+    $searchInput = _QS("#search-area input"),
+    $recipeCardsList = _QS(".recipe-cards-list"),
+    $noResultInRecipes = _QS("#recipes .no-result");
 
 function expandFiltertags(selector, tags) {
-
     if (tagItems[selector].expanded) {
         reduceFiltertags(selector);
         return;
@@ -69,6 +71,50 @@ function reduceFiltertags(selector) {
     tagItems[selector].expanded = false;
 }
 
+function displayRecipe(recipe) {
+    const ingredients = recipe.ingredients.slice(0, 7).map(item => `<li>${item.ingredient}${item.quantity ? ": "+item.quantity : ""} ${item.unit || ""}</li>`).join("");
+
+    $recipeCardsList.innerHTML += `
+    <li>
+        <img src="img/cuisine.jpeg" alt="cuisine">
+        <div class="recipe-card-bottom">
+            <div class="recipe-card-bottom-first-line">
+                <h3>${recipe.name}</h3>
+                <div class="recipe-card-time-ctnr">
+                    <i class="far fa-clock"></i>
+                    <span>${recipe.time} min</span>
+                </div>
+            </div>
+            <div class="recipe-card-bottom-second-line">
+                <ul class="recipe-ingredients-list">
+                    ${ingredients}
+                </ul>
+                <p>${recipe.description}</p>
+            </div>
+        </div>
+    </li>`;
+}
+
+function displayMatchingRecipes() {
+    const searchText = $searchInput.value.trim();
+    if (searchText.length >= 3) {
+        const result = getMatchesWithRecipes(searchText);
+        $recipeCardsList.innerHTML = "";
+        $noResultInRecipes.innerHTML = "";
+        if (result.length === 0) {
+            $noResultInRecipes.innerHTML = "<h3>Aucun résultat ne correspond à votre recherche</h3>";
+            return;
+        }
+        result.forEach(recipe => {
+            displayRecipe(recipe);
+        });
+    }
+}
+
+_QS("#ustensils-filter > .filter-tags-header > button").addEventListener("click", () => {
+    expandFiltertags("ustensils", ustensils);
+});
+
 _QS("#ingredients-filter > .filter-tags-header > button").addEventListener("click", () => {
     expandFiltertags("ingredients", ingredients);
 });
@@ -77,6 +123,4 @@ _QS("#appliance-filter > .filter-tags-header > button").addEventListener("click"
     expandFiltertags("appliance", appliances);
 });
 
-_QS("#ustensils-filter > .filter-tags-header > button").addEventListener("click", () => {
-    expandFiltertags("ustensils", ustensils);
-});
+_QS("#search-area button").addEventListener("click", displayMatchingRecipes);
