@@ -7,8 +7,20 @@
     --blue: #3282F7;
 }
 
+.red {
+    background-color: var(--red);
+}
+
+.green {
+    background-color: var(--green);
+}
+
+.blue {
+    background-color: var(--blue);
+}
+
 #main-container {
-    min-width: 320px;
+    min-width: 280px;
     max-width: 1440px;
     width: 90%;
     margin: 0 auto;
@@ -44,22 +56,35 @@ header>h1 {
     font-size: 20px;
 }
 
-#search-area button {
+.search-icon {
     position: absolute;
     top: 18px;
     right: 18px;
     z-index: 2;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-}
-
-.search-icon {
     font-size: 32px;
 }
 
-#search-area button:hover>.search-icon {
-    color: var(--red-logo);
+#tag-words-selected {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#tag-words-selected>li {
+    border-radius: 5px;
+    color: white;
+    height: 37px;
+    padding: 10px 10px 0 15px;
+    margin: 10px;
+}
+
+#tag-words-selected button {
+    border: none;
+    background-color: transparent;
+}
+
+#tag-words-selected i {
+    color: white;
+    font-size: 17px;
 }
 
 #filters-item {
@@ -153,7 +178,7 @@ header>h1 {
 }
 
 .filter-tags-body>ul {
-    width: 180px;
+    width: 140px;
 }
 
 .filter-tags-body button {
@@ -238,4 +263,14 @@ header>h1 {
 
 .recipe-card-bottom p {
     margin-top: 0;
+}
+
+@media all and (max-width: 768px) {
+    #filters-item {
+        flex-direction: column;
+        align-items: center;
+    }
+    #filters-item>li {
+        width: 100%;
+    }
 }

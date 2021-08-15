@@ -1,11 +1,59 @@
 const tagItems = {
-        ingredients: { loaded: false, expanded: false, width: "180px" },
-        appliance: { loaded: false, expanded: false, width: "180px" },
-        ustensils: { loaded: false, expanded: false, width: "180px" },
+        ingredients: { expanded: false },
+        appliance: { expanded: false },
+        ustensils: { expanded: false },
     },
-    $searchInput = _QS("#search-area input"),
+
+    ingredientTags = [],
+    ustensilTags = [],
+
+    $textSearchInput = _QS("#search-area input"),
+    $tagsContainer = _QS("#tag-words-selected"),
     $recipeCardsList = _QS(".recipe-cards-list"),
     $noResultInRecipes = _QS("#recipes .no-result");
+
+let filteredRecipes = [...recipes],
+    ingredients = [],
+    appliances = [],
+    ustensils = [],
+    applianceTag = "";
+
+function setIngredients() {
+    const ingredients_ = [];
+    filteredRecipes
+        .map(recipe => recipe.ingredients.map(ingredient => ingredient.ingredient))
+        .join().split(',').forEach(ingredient => {
+            if (ingredients_.indexOf(ingredient) === -1) {
+                ingredients_.push(ingredient);
+            }
+        });
+    return ingredients_.sort();
+}
+
+function setAppliances() {
+    const appliances_ = [];
+    filteredRecipes
+        .map(recipe => recipe.appliance).forEach(appliance => {
+            if (appliances_.indexOf(appliance) === -1) {
+                appliances_.push(appliance);
+            }
+        });
+    return appliances_.sort();
+}
+
+function setUstensils() {
+    const ustensils_ = [];
+    filteredRecipes
+        .map(recipe => recipe.ustensils)
+        .join().split(',').forEach(ustensil => {
+            ustensil_ = ustensil.charAt(0).toUpperCase() + ustensil.slice(1)
+            if (ustensils_.indexOf(ustensil_) === -1) {
+                ustensils_.push(ustensil_);
+            }
+        });
+    return ustensils_.sort();
+}
+
 
 function expandFiltertags(selector, tags) {
     if (tagItems[selector].expanded) {
@@ -25,32 +73,39 @@ function expandFiltertags(selector, tags) {
 
     const $filterCtnr = _QS(filterSelector);
     const $tagsUls = _QS(filterSelector + " .filter-tags-body");
+    $tagsUls.innerHTML = "";
 
     _QS(filterSelector + " span").style.display = "none";
     _QS(filterSelector + " input").style.display = "block";
     _QS(filterSelector + " i").className = "fas fa-chevron-up";
     $tagsUls.style.display = "flex";
 
-    if (tagItems[selector].loaded) {
-        $filterCtnr.style.width = tagItems[selector].width;
-        return;
-    }
-
-    let $ingredientsUl = document.createElement("ul");
-    $tagsUls.appendChild($ingredientsUl);
+    let $tagsUl = document.createElement("ul");
+    $tagsUls.appendChild($tagsUl);
     let separator = 12;
-    let width = 180;
+    let width = 140;
     if (tags.length > 24) {
-        console.log(tags.length, tags);
+        // console.log(tags.length, tags);
         separator = Math.ceil(tags.length / 2);
     }
-    tags.forEach((ingredient, i) => {
+
+    tags.forEach((tag, i) => {
         if (i > 0 && i % separator == 0) {
-            $ingredientsUl = document.createElement("ul");
-            $tagsUls.appendChild($ingredientsUl);
-            width += 180;
+            $tagsUl = document.createElement("ul");
+            $tagsUls.appendChild($tagsUl);
+            width += 140;
         }
-        $ingredientsUl.innerHTML += `<li><button>${ingredient}</button></li>`;
+        const $li = document.createElement("li"),
+            $btn = document.createElement("button");
+        $btn.innerText = tag;
+        $btn.addEventListener("click", () => {
+            if (selector === "appliance" && applianceTag) return;
+            filteredRecipes = addTag(selector, tag);
+            displayMatchingRecipes();
+        });
+
+        $tagsUl.appendChild($li);
+        $li.appendChild($btn);
     });
 
     tagItems[selector].width = width + "px"
@@ -66,7 +121,7 @@ function reduceFiltertags(selector) {
     _QS(filterSelector + " input").style.display = "none";
     _QS(filterSelector + " i").className = "fas fa-chevron-down";
     _QS(filterSelector + " .filter-tags-body").style.display = "none";
-    _QS(filterSelector).style.width = "180px";
+    _QS(filterSelector).style.width = null;
 
     tagItems[selector].expanded = false;
 }
@@ -95,32 +150,98 @@ function displayRecipe(recipe) {
     </li>`;
 }
 
+
 function displayMatchingRecipes() {
-    const searchText = $searchInput.value.trim();
+    $recipeCardsList.innerHTML = "";
+    $noResultInRecipes.innerHTML = "";
+    if (filteredRecipes.length === 0) {
+        $noResultInRecipes.innerHTML = "<h3>Aucune recette ne correspond à votre critère… vous pouvez chercher « tarte aux pommes », « poisson », etc.</h3>";
+        return;
+    }
+    filteredRecipes.forEach(recipe => {
+        displayRecipe(recipe);
+    });
+}
+
+function displayMatchingRecipesByText() {
+    const searchText = $textSearchInput.value.trim();
     if (searchText.length >= 3) {
-        const result = getMatchesWithRecipes(searchText);
-        $recipeCardsList.innerHTML = "";
+        filteredRecipes = getMatchesWithRecipes(searchText);
+        displayMatchingRecipes();
+    } else {
+        filteredRecipes = [...recipes];
         $noResultInRecipes.innerHTML = "";
-        if (result.length === 0) {
-            $noResultInRecipes.innerHTML = "<h3>Aucun résultat ne correspond à votre recherche</h3>";
-            return;
-        }
-        result.forEach(recipe => {
-            displayRecipe(recipe);
-        });
     }
 }
 
+function addTag(selector, tag) {
+    const $li = document.createElement("li");
+    $tagsContainer.appendChild($li);
+    $li.innerText = tag;
+    const $btn = document.createElement("button");
+    $btn.innerHTML = "<i class='far fa-times-circle'></i>";
+    $li.appendChild($btn);
+    let i;
+    switch (selector) {
+        case "ingredients":
+            i = ingredientTags.length;
+            ingredientTags.push(tag);
+            $li.className = "blue";
+            $btn.addEventListener("click", () => {
+                ingredientTags.splice(i, 1);
+                resetFilteredRecipesAfterRemovingTag();
+                $tagsContainer.removeChild($li);
+            });
+            return getMatchesWithRecipesWithIngredientTags(ingredientTags, filteredRecipes);
+        case "appliance":
+            applianceTag = tag;
+            $li.className = "green";
+            $btn.addEventListener("click", () => {
+                applianceTag = "";
+                resetFilteredRecipesAfterRemovingTag();
+                $tagsContainer.removeChild($li);
+            });
+            return getMatchesWithRecipesWithApplianceTag(applianceTag, filteredRecipes);
+        case "ustensils":
+            i = ustensilTags.length;
+            ustensilTags.push(tag);
+            $li.className = "red";
+            $btn.addEventListener("click", () => {
+                ustensilTags.splice(i, 1);
+                resetFilteredRecipesAfterRemovingTag();
+                $tagsContainer.removeChild($li);
+            });
+            return getMatchesWithRecipesWithUstensilTags(ustensilTags, filteredRecipes);
+        default:
+            return [...recipes];
+    }
+}
+
+function resetFilteredRecipesAfterRemovingTag() {
+    displayMatchingRecipesByText();
+    console.log(filteredRecipes);
+    filteredRecipes = getMatchesWithRecipesWithIngredientTags(ingredientTags, filteredRecipes);
+    filteredRecipes = getMatchesWithRecipesWithApplianceTag(applianceTag, filteredRecipes);
+    filteredRecipes = getMatchesWithRecipesWithUstensilTags(ustensilTags, filteredRecipes);
+
+    console.log(ingredientTags, applianceTag, ustensilTags);
+    displayMatchingRecipes();
+
+}
+
 _QS("#ustensils-filter > .filter-tags-header > button").addEventListener("click", () => {
+    ustensils = setUstensils();
     expandFiltertags("ustensils", ustensils);
 });
 
 _QS("#ingredients-filter > .filter-tags-header > button").addEventListener("click", () => {
+    ingredients = setIngredients();
     expandFiltertags("ingredients", ingredients);
 });
 
 _QS("#appliance-filter > .filter-tags-header > button").addEventListener("click", () => {
+    appliances = setAppliances();
     expandFiltertags("appliance", appliances);
 });
 
-_QS("#search-area button").addEventListener("click", displayMatchingRecipes);
+_QS("#search-area input").addEventListener("input", displayMatchingRecipesByText);
