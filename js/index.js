@@ -3,29 +3,29 @@ class FilterTag {
         this.selector = selector;
         this.color = color;
         this.items = items;
+        this.loweredCollection = [];
         this.collection = [];
         this.filteredCollection = [];
         this.tags = [];
-        this.selected = [];
         this.expanded = false;
         this.getMatchesWithRecipesWithTags = getMatchesWithRecipesWithTagsCallback;
         this.setHtmlElements();
-        this.addClickEvent();
+        this.addEventListeners();
     }
 
     setHtmlElements() {
         const filterSelector = `#${this.selector}-filter`;
         this.$filterCtnr = _QS(filterSelector);
-        this.$expandBtn = _QS(`#${filterSelector} > .filter-tags-header > button`);
+        this.$expandBtn = _QS(filterSelector + " > .filter-tags-header > button");
         this.$tagsUls = _QS(filterSelector + " .filter-tags-body");
-        this.$span = _QS(filterSelector + " span").style.display = "none";
-        this.$i = _QS(filterSelector + " i").className = "fas fa-chevron-up";
-        this.$input = _QS(filterSelector + " input").style.display = "block";
+        this.$span = _QS(filterSelector + " span");
+        this.$i = _QS(filterSelector + " i");
+        this.$input = _QS(filterSelector + " input");
     }
 
     setCollection() {
         const collection = [];
-        this.items.forEach(item => {
+        this.items().forEach(item => {
             const item_ = item.charAt(0).toUpperCase() + item.slice(1)
             if (collection.indexOf(item_) === -1) {
                 collection.push(item_);
@@ -36,12 +36,26 @@ class FilterTag {
 
     addEventListeners() {
         this.$expandBtn.addEventListener("click", () => {
-            this.collection = this.setCollection();
+            if (this.collection.length === 0) {
+                this.collection = this.setCollection();
+                this.loweredCollection = this.collection.map(tag => tag.toLowerCase());
+                this.filteredCollection = [...this.collection];
+            } else {
+                this.filteredCollection = this.setCollection();
+            }
+
             this.expand();
         });
         this.$input.addEventListener("input", e => {
-            this.displayMatchingTags();
+            const searchText = e.target.value.trim();
+            if (searchText.length < 3) return;
+            this.filteredCollection = this.setMatchingTags(searchText);
+            this.displayTags();
         });
+    }
+
+    setMatchingTags(searchText) {
+        return this.loweredCollection.filter(tag => tag.match(searchText.toLowerCase()));
     }
 
     addTag(tag) {
@@ -96,18 +110,18 @@ class FilterTag {
     displayTags() {
         this.$tagsUls.innerHTML = "";
         let $tagsUl = document.createElement("ul");
-        $tagsUls.appendChild($tagsUl);
+        this.$tagsUls.appendChild($tagsUl);
         let separator = 12;
         let width = 140;
-        if (this.collection.length > 24) {
+        if (this.filteredCollection.length > 24) {
             // console.log(tags.length, tags);
-            separator = Math.ceil(this.collection.length / 2);
+            separator = Math.ceil(this.filteredCollection.length / 2);
         }
 
-        this.collection.forEach((tag, i) => {
+        this.filteredCollection.forEach((tag, i) => {
             if (i > 0 && i % separator == 0) {
                 $tagsUl = document.createElement("ul");
-                $tagsUls.appendChild($tagsUl);
+                this.$tagsUls.appendChild($tagsUl);
                 width += 140;
             }
             const $li = document.createElement("li"),
@@ -121,7 +135,7 @@ class FilterTag {
                 displayMatchingRecipes();
             });
 
-            this.$tagsUl.appendChild($li);
+            $tagsUl.appendChild($li);
             $li.appendChild($btn);
         });
 
@@ -137,17 +151,17 @@ let filteredRecipes = [...recipes];
 const filterTags = {
         ingredients: new FilterTag(
             "ingredients", "blue",
-            filteredRecipes.map(recipe => recipe.ingredients.map(ingredient => ingredient.ingredient)).join().split(','),
+            () => filteredRecipes.map(recipe => recipe.ingredients.map(ingredient => ingredient.ingredient)).join().split(','),
             _getMatchesWithRecipesWithIngredientTags
         ),
         appliance: new FilterTag(
             "appliance", "green",
-            filteredRecipes.map(recipe => recipe.appliance),
+            () => filteredRecipes.map(recipe => recipe.appliance),
             _getMatchesWithRecipesWithApplianceTag
         ),
         ustensils: new FilterTag(
             "ustensils", "red",
-            filteredRecipes.map(recipe => recipe.ustensils).join().split(','),
+            () => filteredRecipes.map(recipe => recipe.ustensils).join().split(','),
             _getMatchesWithRecipesWithUstensilTags
         ),
     },
@@ -208,17 +222,12 @@ function displayMatchingRecipesByText() {
 
 function resetFilteredRecipesAfterRemovingTag() {
     displayMatchingRecipesByText();
-    console.log(filteredRecipes);
+    // console.log(filteredRecipes);
     filteredRecipes = _getMatchesWithRecipesWithIngredientTags(filterTags["ingredients"].tags, filteredRecipes);
     filteredRecipes = _getMatchesWithRecipesWithApplianceTag(filterTags["appliance"].tags, filteredRecipes);
     filteredRecipes = _getMatchesWithRecipesWithUstensilTags(filterTags["ustensils"].tags, filteredRecipes);
-    console.log(filteredRecipes, filterTags["ingredients"].tags, filterTags["appliance"].tags, filterTags["ustensils"].tags);
+    // console.log(filteredRecipes, filterTags["ingredients"].tags, filterTags["appliance"].tags, filterTags["ustensils"].tags);
     displayMatchingRecipes();
 }
 
 _QS("#search-area input").addEventListener("input", displayMatchingRecipesByText);
-
-
-function displayMatchingTags(selector) {
-    const $input = _QS(`#${selector}-filters input`);
-}
