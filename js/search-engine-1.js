@@ -12,13 +12,11 @@
 //     }).join('');
 // }
 
-function getMatchesWithRecipes(searchTxt) {
+function _getMatchesWithRecipes(searchTxt) {
     const formated = searchTxt.toLowerCase();
     return recipes.filter(recipe => {
         if (recipe.name.match(formated) ||
-            // recipe.appliance.match(formated) ||
             recipe.description.match(formated) ||
-            // recipe.ustensils.join("").match(formated) ||
             recipe.ingredients.map(item => item.ingredient).join("").match(formated)
         ) {
             return true;
@@ -27,7 +25,8 @@ function getMatchesWithRecipes(searchTxt) {
     });
 }
 
-function getMatchesWithRecipesWithIngredientTags(tagWords, filteredRecipes) {
+function _getMatchesWithRecipesWithIngredientTags(tagWords, filteredRecipes) {
+    if (tagWords.length === 0) return filteredRecipes;
     const formatedTagWords = tagWords.map(tagWord => tagWord.toLowerCase());
     return filteredRecipes.filter(recipe => {
         const formatedIngredients = recipe.ingredients.map(item => item.ingredient.toLowerCase()).join("");
@@ -44,8 +43,9 @@ function getMatchesWithRecipesWithIngredientTags(tagWords, filteredRecipes) {
     });
 }
 
-function getMatchesWithRecipesWithApplianceTag(tagWord, filteredRecipes) {
-    const formatedTagWord = tagWord.toLowerCase();
+function _getMatchesWithRecipesWithApplianceTag(tagWords, filteredRecipes) {
+    if (tagWords.length === 0) return filteredRecipes;
+    const formatedTagWord = tagWords[0].toLowerCase();
     return filteredRecipes.filter(recipe => {
         if (!recipe.appliance.toLowerCase().match(formatedTagWord)) {
             return false;
@@ -54,7 +54,8 @@ function getMatchesWithRecipesWithApplianceTag(tagWord, filteredRecipes) {
     });
 }
 
-function getMatchesWithRecipesWithUstensilTags(tagWords, filteredRecipes) {
+function _getMatchesWithRecipesWithUstensilTags(tagWords, filteredRecipes) {
+    if (tagWords.length === 0) return filteredRecipes;
     const formatedTagWords = tagWords.map(tagWord => tagWord.toLowerCase());
     return filteredRecipes.filter(recipe => {
         const formatedUstensils = recipe.ustensils.map(ustensil => ustensil.toLowerCase()).join("");
