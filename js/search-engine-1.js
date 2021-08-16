@@ -12,6 +12,33 @@
 //     }).join('');
 // }
 
+// function _getMatchesWithRecipes(searchTxt) {
+//     const formated = searchTxt.toLowerCase();
+//     return recipes.filter(recipe => {
+//         if (recipe.name.match(formated) ||
+//             recipe.description.match(formated) ||
+//             recipe.ingredients.map(item => item.ingredient).join("").match(formated)
+//         ) {
+//             return true;
+//         }
+//         return false;
+//     });
+// }
+
+const searchRecipes = recipes.map(recipe => {
+    return (recipe.name + "|$|" +
+        recipe.ingredients.map(item => item.ingredient).join("") + "|$|" +
+        recipe.appliance + "|$|" +
+        recipe.ustensils.join("")).toLowerCase();
+});
+
+function _getMatchesWithRecipes(searchTxt) {
+    const formated = searchTxt.toLowerCase();
+    return searchRecipes.filter(recipe => {
+        return recipe.match(formated);
+    });
+}
+
 function _getMatchesWithRecipes(searchTxt) {
     const formated = searchTxt.toLowerCase();
     return recipes.filter(recipe => {
