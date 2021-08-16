@@ -148,8 +148,6 @@ class FilterTag {
         });
 
         this.$filterCtnr.style.width = width + "px";
-        // tagItems[this.selector].width = width + "px"
-        // tagItems[selector].loaded = true;
     }
 
 }
@@ -230,11 +228,9 @@ function displayMatchingRecipesByText() {
 
 function resetFilteredRecipesAfterRemovingTag() {
     displayMatchingRecipesByText();
-    console.log(filteredRecipes);
     filteredRecipes = _getMatchesWithRecipesWithIngredientTags(filterTags["ingredients"].tags, filteredRecipes);
     filteredRecipes = _getMatchesWithRecipesWithApplianceTag(filterTags["appliance"].tags, filteredRecipes);
     filteredRecipes = _getMatchesWithRecipesWithUstensilTags(filterTags["ustensils"].tags, filteredRecipes);
-    console.log(filteredRecipes, filterTags["ingredients"].tags, filterTags["appliance"].tags, filterTags["ustensils"].tags);
     displayMatchingRecipes();
 }
 
