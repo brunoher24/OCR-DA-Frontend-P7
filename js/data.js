@@ -1672,8 +1672,9 @@ const recipes = [{
     }
 ];
 
-// const ingredients = ["Ail", "Ananas", "Banane", "Basilic", "Beurre", "Beurre fondu", "Beurre salé", "Bicarbonate", "Blanc de dinde", "Boudoirs", "Carotte", "Champignons de paris", "Chocolat", "Chocolat au lait", "Chocolat noir", "Chocolat noir en pepites", "Citron", "Citron Vert", "Concombre", "Coulis de tomate", "Coulis de tomates", "Courgette", "Crème de coco", "Crème fraîche", "Crème liquide", "Cumin", "Eau", "Echalote", "Emmental", "Farine", "Farine de blé noir", "Feuilles de laitue", "Fraise", "Fromage blanc", "Fromage de chèvre", "Fromage à raclette", "Glace à la vanille", "Glaçons", "Gruyère", "Haricots verts", "Huile d'olive", "Jambon de parme", "Jambon fumé", "Jus de citron", "Kiwi", "Kiwis", "Lait", "Lait de Coco", "Lait de coco", "Lardons", "Lasagnes", "Macaronis", "Mangue", "Mascarpone", "Mayonnaise", "Maïs", "Maïzena", "Menthe", "Miel", "Moutarde de Dijon", "Mozzarella", "Mâche", "Noix", "Noix de muscade", "Oeuf", "Oeuf dur", "Oignon", "Olives", "Orange", "Oseille", "Pain", "Pain de mie", "Paprika", "Parmesan", "Pastèque", "Patate douce", "Pennes", "Petits poids", "Poireau", "Poires au jus", "Pois Cassé", "Pois chiches", "Poivron rouge", "Pomme", "Pommes", "Pommes de terre", "Poudre d'amendes", "Poulet", "Pruneaux", "Pâte brisée", "Pâte feuilletée", "Pâte sablée", "Pâte à pizza", "Rhubarbe", "Riz blanc", "Roblochon", "Salade Verte", "Saucisse bretonne ou de toulouse", "Saumon Fumé", "Spaghettis", "Sucre", "Sucre en Poudre", "Sucre en poudre", "Sucre glace", "Sucre roux", "Sucre vanillé", "Tagliatelles", "Thon Rouge (ou blanc)", "Thon en miettes", "Tomate", "Tomates cerises", "Tomates pelées", "Vermicelles", "Viande hachée", "Viande hachée 1% de matière grasse", "Vin blanc sec", "Vin rouge", "Vinaigre Balsamic", "Vinaigre de cidre", "Vinaigrette"];
-
-// const appliances = ["Blender", "Casserole", "Casserolle", "Cocotte", "Cuiseur de riz", "Four", "Mixer", "Moule à charlotte", "Poële", "Poële à crêpe", "Saladier", "Sauteuse"];
-
-// const ustensils = ["Bol", "Casserolle", "Cocotte minute", "Couteau", "Cuillère en bois", "Cuillère à Soupe", "Cuillère à melon", "Économe", "Fouet", "Fourchette", "Louche", "Moule", "Moule à gateaux", "Moule à tarte", "Moule à tartelettes (6)", "Passoire", "Plaque de cuisson", "Plat à gratin", "Poelle à frire", "Presse citron", "Rouleau à patisserie", "Râpe à fromage", "Saladier", "Spatule", "Verres"];
+const searchRecipes = recipes.map(recipe => {
+    return (recipe.name + "|$|" +
+        recipe.ingredients.map(item => item.ingredient).join("") + "|$|" +
+        recipe.appliance + "|$|" +
+        recipe.ustensils.join("")).toLowerCase();
+});

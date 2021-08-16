@@ -1,37 +1,5 @@
-// const specialChars = "aàäâ,oöôò,uùüû,iïìî";
-
-// function formatString(str) {
-//     const specialChars_ = specialChars.split(',');
-//     return str.toLowerCase().split('').map(char => {
-//         specialChars_.forEach(specialChar => {
-//             if(specialChar.match(char)) {
-//                 return specialChar[0];
-//             }
-//         });
-//         return char;
-//     }).join('');
-// }
-
-// function _getMatchesWithRecipes(searchTxt) {
-//     const formated = searchTxt.toLowerCase();
-//     return recipes.filter(recipe => {
-//         if (recipe.name.match(formated) ||
-//             recipe.description.match(formated) ||
-//             recipe.ingredients.map(item => item.ingredient).join("").match(formated)
-//         ) {
-//             return true;
-//         }
-//         return false;
-//     });
-// }
-
-const searchRecipes = recipes.map(recipe => {
-    return (recipe.name + "|$|" +
-        recipe.ingredients.map(item => item.ingredient).join("") + "|$|" +
-        recipe.appliance + "|$|" +
-        recipe.ustensils.join("")).toLowerCase();
-});
-
+// on utilise un tableau pré-formaté de recettes pour effectuer la recherche globale 
+// sur tous les attributs en une seule opération de "match" par élément
 function _getMatchesWithRecipes(searchTxt) {
     const formated = searchTxt.toLowerCase();
     return searchRecipes.filter(recipe => {
