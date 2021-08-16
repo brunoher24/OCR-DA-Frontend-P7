@@ -48,10 +48,19 @@ class FilterTag {
         });
         this.$input.addEventListener("input", e => {
             const searchText = e.target.value.trim();
-            if (searchText.length < 3) return;
-            this.filteredCollection = this.setMatchingTags(searchText);
-            this.displayTags();
+            if (searchText.length === 0) {
+                this.filteredCollection = [...this.collection];
+                this.displayTags();
+            } else if (searchText.length >= 3) {
+                this.filteredCollection = this.setMatchingTags(searchText);
+                this.displayTags();
+            }
         });
+
+        this.$tagsUls.addEventListener("mouseleave", () => {
+            this.filteredCollection = [...this.collection];
+            this.reduce();
+        })
     }
 
     setMatchingTags(searchText) {
@@ -65,11 +74,10 @@ class FilterTag {
         const $btn = document.createElement("button");
         $btn.innerHTML = "<i class='far fa-times-circle'></i>";
         $li.appendChild($btn);
-        let i = this.tags.length;
         this.tags.push(tag);
         $li.className = this.color;
         $btn.addEventListener("click", () => {
-            this.tags.splice(i, 1);
+            this.tags.splice(this.tags.indexOf(tag), 1);
             resetFilteredRecipesAfterRemovingTag();
             $tagsContainer.removeChild($li);
         });
@@ -128,7 +136,7 @@ class FilterTag {
                 $btn = document.createElement("button");
             $btn.innerText = tag;
             $btn.addEventListener("click", () => {
-                if (this.selector === "appliance" && this.tags.length > 0) return;
+                if (this.selector === "appliance" && this.tags.length > 0 || this.tags.indexOf(tag) > -1) return;
                 filteredRecipes = this.addTag(tag);
 
                 this.$input.value = "";
@@ -222,11 +230,11 @@ function displayMatchingRecipesByText() {
 
 function resetFilteredRecipesAfterRemovingTag() {
     displayMatchingRecipesByText();
-    // console.log(filteredRecipes);
+    console.log(filteredRecipes);
     filteredRecipes = _getMatchesWithRecipesWithIngredientTags(filterTags["ingredients"].tags, filteredRecipes);
     filteredRecipes = _getMatchesWithRecipesWithApplianceTag(filterTags["appliance"].tags, filteredRecipes);
     filteredRecipes = _getMatchesWithRecipesWithUstensilTags(filterTags["ustensils"].tags, filteredRecipes);
-    // console.log(filteredRecipes, filterTags["ingredients"].tags, filterTags["appliance"].tags, filterTags["ustensils"].tags);
+    console.log(filteredRecipes, filterTags["ingredients"].tags, filterTags["appliance"].tags, filterTags["ustensils"].tags);
     displayMatchingRecipes();
 }
 
