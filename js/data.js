@@ -1672,6 +1672,8 @@ const recipes = [{
     }
 ];
 
+
+// tableau de recttes formaté pour une recherche optimisée
 const searchRecipes = recipes.map(recipe => {
     return (recipe.name + "|$|" +
         recipe.ingredients.map(item => item.ingredient).join("") + "|$|" +
