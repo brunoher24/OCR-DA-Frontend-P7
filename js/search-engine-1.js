@@ -15,19 +15,6 @@ function _getMatchesWithRecipes(searchTxt) {
     });
 }
 
-function _getMatchesWithRecipes(searchTxt) {
-    const formated = searchTxt.toLowerCase();
-    return recipes.filter(recipe => {
-        if (recipe.name.match(formated) ||
-            recipe.description.match(formated) ||
-            recipe.ingredients.map(item => item.ingredient).join("").match(formated)
-        ) {
-            return true;
-        }
-        return false;
-    });
-}
-
 function _getMatchesWithRecipesWithIngredientTags(tagWords, filteredRecipes) {
     if (tagWords.length === 0) return filteredRecipes;
     const formatedTagWords = tagWords.map(tagWord => tagWord.toLowerCase());
